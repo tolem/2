@@ -1,5 +1,201 @@
-{% extends layout.html %}
+{% extends "auctions/layout.html" %}
+{% block title %} listing page {% endblock %}
 
 {% block body %}
-<h1>TODO</h1>
+<h2 class="card-title">Listing: {{ listing.title }}</h2>
+{% if winner %}
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Congratulations {{ name}}!</h4>
+  <p> Your ${{ offer|floatformat:2 }} bid is the highest for this listing.
+   You won  the auction. We have new listings, that may interest you?.
+   Check out our  active listings for more  auctions </p>
+  <hr>
+  <p class="mb-0"> 
+  	<a href="{% url 'index' %}"> Browse active listings </a></p>
+</div>
+<h4><span class="badge badge-info">Winner</span></h4>
+
+{% endif %}
+{% if watchlist_state %} 
+	  <p class="h4"> <span class="badge badge-secondary"> Watchlist</span> </p>
+{% endif %}
+
+<div>  
+	<div>
+	     <img id="img-mtx" src="{% if listing.image %} {{ listing.image }} {% else %}
+                        https://robohash.org/23.238.193.4.png
+                        {% endif %}"  class="img-fluid w-70"  alt="{{listing.title}}">
+    </div>
+</br>
+<div>
+
+	<h2>{{ total_watchers }} Watcher{% if total_watchers > 1 %}s {% endif %} </h2>
+	{% if listing.active %}
+
+	  {% if watchlist_state %} 
+
+
+        <form method="POST" action="{% url 'watchList'  request.user.pk %}">
+        	{% csrf_token %}
+
+        <div class="mx-auto" style="width: 200px;">
+        	  <input type="hidden"  name="del" value="{{ listing.pk }}">
+			<input class="btn btn-danger btn-lg" style="justify-content: center;" type="submit" name="delete" value="Delete from watchlist">
+		</div>
+	</form>
+	{% elif watchlist_state == False %} 
+			<form method="POST" action="{% url 'watchList'  request.user.pk %}">
+        	{% csrf_token %}
+			<div class="mx-auto" style="width: 200px;">
+			<input type="hidden"  name="add" value="{{ listing.pk }}">
+			<input class="btn btn-success btn-lg" style="justify-content: center;" type="submit" value="Add to watchlist" name="add_item">
+		</div>
+		 </form>
+     {% endif %} 	
+     {% endif %}
+     	{% if watchlist_form %}
+     	<form method="POST" action="{% url 'listing' listing.pk %}"> 
+			{% csrf_token %}
+			<div class="mx-auto" style="width: 200px;">
+			{% for watch in watchlist_form %} 
+			{{ watch.label_tag }} {{ watch }}
+			{% endfor %}
+
+			<input class="btn btn-primary btn-lg" style="justify-content: center;" type="submit" value="Update status" name="state">
+		</div>
+		</form>
+		{% endif %}
+		{% if msg %}
+		<div class="alert alert-warning" role="alert">
+				<p class="h3">{{ msg }} </p>
+		</div>
+		{% endif %}
+     
+	
+
+
+
+
+<p class="lead">Description: {{ listing.description }} </p>
+
+<h3> <strong> ${{ listing.current_price|floatformat:2 }}</strong> </h3>
+{% if listing.active %}
+{% if user.pk != name.pk %}
+<h4> Bids </h4>
+<div><p> {{total_bids }} Bids placed. Your bid is the current one </p> </div>
+
+	<form action="{% url 'listing' listing.pk %}"  method = "POST" >
+		{% csrf_token %}
+		<div class="form-group" >
+			<div>
+				{% for field in bid %}
+					{{field.label_tag}} {{field}}
+			</div>
+			<br/>
+			{% endfor %}
+		<div class="mx-auto" style="width: 200px;">
+			<input class="btn btn-success btn-lg" style="justify-content: center;" type="submit" name="haggle" value="Place your bid!">
+		</div>
+
+		</div>
+		
+	</form>
+	{% endif %}
+	{% endif %}
+
+
+
+<h5 class="card-title">Details</h5>
+<div>
+<ul class="list-group list-group-flush">
+{% if user.pk %}
+  <li class="list-group-item">Listed by: <a href="{% if user.pk %}{% url 'watchList' listing.seller.pk %} {% endif %}"> {{ listing.seller }}  </a></li> {% endif %}
+  <li class="list-group-item">Category: {{ listing.category }}</li>
+  <li class="list-group-item"> Created {{ listing.created_at }}</li>
+  <li class="list-group-item">Status:{% if listing.active %}  Active {% else %} Closed {% endif %}</li>
+</ul>
+</div>
+ </div>
+
+</div>
+
+
+</br>
+
+{% if user.pk %}
+<h5 class="card-title"> Add your Comment </h5>
+<div>  	
+	<form action="{% url 'listing' listing.pk %}"  method = "POST" >
+		{% csrf_token %}
+		<div class="form-group" >
+			<div class="bg-light p-2">
+		
+					
+			        <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://robohash.org/23.238.193.4.png" width="40">
+			        	{% for post in posts %}
+			        	{{ post }}
+			        	{% if post.content %}
+			         {{ post.label_tag }} {{ post.content }}
+			         {% endif %}
+			     </div>
+                    <div class="mt-2 text-right">
+
+                </div>
+			<br/>
+			{% endfor %}
+		<div class="mx-auto" style="width: 200px;">
+			<input class="btn btn-primary btn-lg shadow-none" name="posts" style="justify-content: center;" type="submit" value="Post!">
+		</div>
+
+		</div>
+		
+	</form>
+</div>
+
+
+
+<h5 class="card-title"> {{ listing.title }} Comments ({{ comments_num }}) </h5>
+
+{% if posted %}
+<div>
+			<div>
+				{% for post in posted %}
+					
+			</div>
+			<br/>
+
+			<div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-8">
+            <div class="d-flex flex-column comment-section">
+                <div class="bg-white p-2">
+                    <div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://robohash.org/23.238.193.4.png" width="40">
+                        <div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name"> {{post.user_ID }} </span><span class="date text-black-50">Shared publicly - {{ post.timestamps }}</span></div>
+                    </div>
+                    <div class="mt-2">
+                        <p class="comment-text"> {{ post.commentBox }} </p>
+                    </div>
+                </div>
+           
+            </div>
+        </div>
+    </div>
+</div>
+			{% endfor %}
+
+
+		</div>
+
+ </div>
+
+
+
+{% else %}
+<div class="alert alert-info" role="alert">
+ <p>No posts yet! </p>
+</div>
+{% endif %}
+</br>
+</br>
+{% endif %}
 {% endblock %}

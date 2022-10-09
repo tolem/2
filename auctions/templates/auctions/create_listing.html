@@ -1,5 +1,28 @@
-{% extends auctions/layout.html %}
+{% extends "auctions/layout.html" %} 
+{% load static %}
 
+{% block title %} Make a Listing{% endblock %}
 {% block body %}
-<h1>TODO</h1>
+ <div class="card-header">
+	<h2>Create your Listing! {{ request.user.username }}</h2>
+</div>
+	{% if message %} {{message}} {% endif %}
+	<form action="{% url 'createListing' %}"  method = "POST" >
+		{% csrf_token %}
+		<div class="form-group" >
+			<div>
+				{% for field in form %}
+					{{field.label_tag}} {{field}}
+			</div>
+			<br/>
+			{% endfor %}
+		<div class="mx-auto" style="width: 200px;">
+			<input class="btn btn-success btn-lg" style="justify-content: center;" type="submit" value="Add your Listing!">
+		</div>
+
+		</div>
+		
+	</form>
+</br>
+</br>
 {% endblock %}

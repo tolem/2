@@ -1,16 +1,14 @@
 {% extends "auctions/layout.html" %}
-
+{% block title %}All {{User.name}} listings {% endblock %}
 
 {% block body %}
-    
-
   <div class="card-header">
-   <h2>{% if closed %} Closed Listings {% else %} Active Listings {% endif %} {% if category %} for {{ category.name|title }} {% else %}  {% endif %} </h2>
+   <h2> All Listings by {{ request.user.username }}</h2>
   </div>
     </div>
     </br>
     <ul id="no_list">
-        {% for item in listing %}
+        {% for item in all_listed %}
         <li > 
               <div class="card mb-3" style="max-width: 740px;">
                   <div class="row no-gutters">
@@ -23,12 +21,12 @@
                       <div class="card-body">
                         
                         <a href=" {% url 'listing' item.pk %}"><h5 class="card-title">{{ item.title }}</h5></a>
-                        {% if user.pk %}<p class="card-text"> Listed by : <a href="{% url 'watchList' item.seller.pk %}">{{ item.seller }}  </a> </p> {% endif %}
+                        <p class="card-text"> Listed by : <a href="{% url 'watchList' item.pk %}">{{ item.seller }} </a> </p>
                         <p class="card-text"> {{ item.description }}</p> 
                         <p class="card-text"> Price: <strong>${{ item.current_price|floatformat:2 }} </strong>
 
                         </p> 
-                        <p class="card-text"><small class="text-muted"> Created  {{ item.created_at }}</small></p>
+                        <p class="card-text"><small class="text-muted">{{ item.created_at }}</small></p>
                       </div>
                     </div>
                   </div>
@@ -38,7 +36,7 @@
 {% empty %}
  
   {% if closed %} 
-  {% if request.user.username %}
+  {% if user.username %}
    <div class="jumbotron">
   <h1 class="display-4">Ohh no, no  closed auction yet. </h1>
   <hr class="my-4">
@@ -52,7 +50,7 @@
     {% endif %}
 
 {% else %}
-  {% if request.user.username %}
+  {% if user.username %}
    <div class="jumbotron">
   <h1 class="display-4">Ohh no, this category is yet to recieve an auction. </h1>
   <hr class="my-4">
@@ -67,11 +65,11 @@
 {% endif %}
 </div>
 
+
      
 {% endfor %}
 </ul>
 
-
 <br/>
-{% endblock %}
 
+{% endblock %}

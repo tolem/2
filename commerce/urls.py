@@ -20,3 +20,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("auctions.urls"))
 ]
+
+# add a flag for
+# handling the 404 error
+handler404 = 'auctions.views.error_404_view'

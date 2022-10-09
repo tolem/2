@@ -1,5 +1,18 @@
-{% extends auctions/layout.html %}
+{% extends "auctions/layout.html" %}
+{% block title%}
+Category
+{% endblock %}
 
 {% block body %}
-<h1> TODO </h1>
+<div class="card-header">
+	<h2 class="card-title"> Commerce Categories </h2>
+</div>
+</br>
+	<ul class="list-group">
+		{% for category in catalog %}
+			<li class="list-group-item"><a href="{% url 'filtered index' category|safe %}"> {{ category  }} </a></li>
+		{% endfor %}
+	</ul>
+</br>
+</br>
 {% endblock %}

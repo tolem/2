@@ -1,5 +1,68 @@
-{% extends auctions/layout.html %}
-
+{% extends "auctions/layout.html" %}
+{% block title %} {{User.name}} Wacthlist{% endblock %}
 {% block body %}
-<h1>TODO</h1>
+
+<p class="lead">{% if request.user.username == User.username %} Hey {{User.username}}, your total listings is {{ len }} and your total bids is  {{ placed }}  {% else %}  Total listings is  {{ len }} for {{ User.username }} {% endif %} </p>
+<h2 class="card-title"> {{User.username}}'s has {{ badge }} items in Watchlist </h2>
+ 
+   <div class="row row-cols-1 row-cols-md-2">
+    {% for item in wacthlist %}
+  <div class="col mb-6">
+    <div class="card">
+      <img src="{% if item.image %} {{item.image}} {% else %}
+                        https://robohash.org/23.238.193.4.png
+                        {% endif %}" class="card-img-top" alt="{{item.title}}">
+      <div class="card-body">
+        <h5 class="card-title"> <a href=" {% url 'listing' item.pk %}"><h5 class="card-title">{{ item.title }} {{ item.seller.pk }}</h5></a> </h5>
+        <p class="card-text"> {{ item.description }}</p> 
+         <p class="card-text"> Price: <strong>${{ item.current_price|floatformat:2 }} </strong>
+                        </p> 
+
+        <p class="card-text"><small class="text-muted">{{ item.created_at }}</small></p>
+      {% if user.pk == User.pk %}
+
+        {% if request.user.pk == User.pk %} 
+        <form method="POST" action="{% url 'watchList'  request.user.pk %}">
+        	{% csrf_token %}
+
+        <div class="mx-auto" style="width: 200px;">
+        	  <input type="hidden"  name="del" value="{{ item.pk }}">
+			<input class="btn btn-danger btn-lg" style="justify-content: center;" type="submit" name="delete" value="Delete from watchlist">
+		</div>
+	</form>
+			{% else %} 
+			<form method="POST" action="{% url 'watchList'  request.user.pk %}">
+        	{% csrf_token %}
+			<div class="mx-auto" style="width: 200px;">
+			<input type="hidden"  name="add" value="{{ item.pk }}">
+			<input class="btn btn-success btn-lg" style="justify-content: center;" type="submit" value="Add to watchlist" name="add_item">
+		</div>
+		 </form>
+        	 {% endif %} 
+           {% endif %}
+
+   
+      </div>
+    </div>
+</div>
+ 
+{% empty %}
+ 
+ <div class="jumbotron">
+  <h1 class="display-4"> Nothing yet added to watchlist  </h1>
+  <hr class="my-4">
+  {% if request.user.username %}
+  
+    <p class="lead"> {{ request.user.username }} check out our amazing listings at affordable prices </p>
+
+  <a class="btn btn-primary btn-lg" href=" {% url 'index' %} " {} role="button"> Listings </a>
+{% endif %}
+</div>
+</div>
+
+
+
+      {% endfor %}
+  </div>
+    </div>
 {% endblock %}

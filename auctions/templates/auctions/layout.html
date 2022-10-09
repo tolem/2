@@ -18,19 +18,23 @@
         </div>
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
+                <a class="nav-link" href="{% url 'index'  %}">Active Listings</a>
+            </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'closed' %}">Closed Listings</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'catalog' %}">Categories</a>
             </li>
 
 
-
-
-
             {% if user.is_authenticated %}
+
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'myList'  user.pk %}"> {{ user.username }} Listings </a>
+            </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'watchList' %}">Watchlist</a>
+                <a class="nav-link" href="{% url 'watchList'  user.pk %}">Watchlist {%if badge %}  <span class="badge badge-secondary"> {{ badge }}</span> {% endif %}</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'createListing' %}">Create Listing</a>
@@ -49,7 +53,14 @@
             {% endif %}
         </ul>
         <hr>
+
+  <div class="card">
         {% block body %}
         {% endblock %}
+    </br>
+    <div class="card-footer text-muted text-center" id="btm-mtx">
+    My Auctions &copy; 2022 \/--\/
+  </div>
+</div>
     </body>
 </html>
