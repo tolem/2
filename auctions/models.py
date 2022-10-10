@@ -64,10 +64,10 @@ class Bid(models.Model):
         if self.offer and self.listing.current_price():
             if self.offer <= self.listing.current_price():
                 raise ValidationError({'offer': (' Your bid  must be higher than the current ' 
-                                                        'price!') })
+                                                        'price!') },code='error1')
     
     def __str__(self):
-        return (f"A bid of {self.offer} made for the item - \n{self.listing.current_price()}\n by user - {self.buyer}")
+        return (f"A bid of {self.offer} made for {self.listing} - \n{self.listing.current_price()}\n by user - {self.buyer}")
 
 
 

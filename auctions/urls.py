@@ -16,6 +16,5 @@ urlpatterns = [
     path("closed", views.closed, name="closed"),
     path("myLists/<int:us_id>", views.all_listing, name="myList"),
 
-
 ]
 

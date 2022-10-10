@@ -81,11 +81,6 @@ def create_listing(request):
     message = ""
     if request.method == "POST":
         print(request.POST)
-        # listing_form = ListingForm(request.POST, request.FILES)
-        # print(request.POST['seller'])
-        # print(listing_form.errors, "where ")
-        # print(listing_form.is_valid())
-        # print(listing_form.fields['seller'])
         _user = User.objects.get(pk=request.user.pk)
         listform = Listing(seller=_user)
         # double check to make sure its an instance of same user
@@ -128,11 +123,11 @@ def listing_page(request, list_id):
     print(watchlist_form, 'watch?')
 
 
-    # sums the count of all watchers for a listing
+    # sums the count of all watchers in a listing
     total_watchers = sum([1 for us in watchers if us.watchlist.filter(pk=listing.pk) ])
     watchlist_state = ''
 
-    # breaking the DRY rule here. I know I lazy today haha
+    # breaking the DRY rule here. I know haha
     if (request.user.pk):
         bid = BidForm()
         comment = CommentForm()
@@ -161,6 +156,8 @@ def listing_page(request, list_id):
                 # checks to see if user is an instance of winner 
                 if winner.buyer.pk == user.pk:
                     winner.winner = True
+                    # saves winner 
+                    winner.save()
                 print(winner.winner,_)
 
 
@@ -282,7 +279,6 @@ def watchList(request, user_id):
             # grabs current listings 
             remove_watchlist = user.watchlist.get(pk=int(request.POST['del']))
             print(remove_watchlist)
-            # removes that listing
             user.watchlist.remove(remove_watchlist)
 
 
