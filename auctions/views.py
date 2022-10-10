@@ -158,7 +158,7 @@ def listing_page(request, list_id):
                     winner.save()
                 print(winner.winner,_)
 
-
+    # default for not signed in user
     else:
         user = tuple()
         user_watchlist = {}
