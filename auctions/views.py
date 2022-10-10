@@ -110,9 +110,7 @@ def listing_page(request, list_id):
     listing = Listing.objects.get(pk=list_id)
     msg = ''
     name = listing.seller
-    # user_id = User.objects.get(username=name)
     watchers = User.objects.all()
-    # user_id = int( user_id.pk )
     winner = None
     if request.user.pk == int(name.pk):
         watchlist_form = WacthListForm(instance=listing)
@@ -156,7 +154,7 @@ def listing_page(request, list_id):
                 # checks to see if user is an instance of winner 
                 if winner.buyer.pk == user.pk:
                     winner.winner = True
-                    # saves winner 
+                    # saves buyer as winner 
                     winner.save()
                 print(winner.winner,_)
 
